@@ -1,0 +1,8 @@
+apiVersion: enmasse.io/v1beta1
+kind: Address
+metadata:
+  name: vertx-example.mymulticast
+spec:
+  address: mymulticast
+  type: multicast
+  plan: standard-small-multicast
