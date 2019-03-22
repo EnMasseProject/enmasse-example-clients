@@ -1,0 +1,15 @@
+apiVersion: enmasse.io/v1beta1
+kind: AddressSpace
+metadata:
+  name: quarkus-example
+spec:
+  type: standard
+  plan: standard-small
+  endpoints:
+    - name: messaging
+      service: messaging
+      cert:
+        provider: openshift
+      exports:
+        - kind: ConfigMap
+          name: messaging-config

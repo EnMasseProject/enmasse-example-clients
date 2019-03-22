@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quarkus-example-client
+  labels:
+    app: quarkus-example-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quarkus-example-client
+      application: demo
+  template:
+    metadata:
+      labels:
+        app: quarkus-example-client
+        application: demo
+    spec:
+      containers:
+        - name: quarkus-example-client
+          image: quarkus-example-client:latest
+          env:
+            - name: SMALLRYE_MESSAGING_SOURCE_CONTROL_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: messaging-config
+                  key: service.host
+            - name: SMALLRYE_MESSAGING_SOURCE_CONTROL_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: messaging-config
+                  key: service.port.amqp
+            - name: SMALLRYE_MESSAGING_SOURCE_EVENTS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: messaging-config
+                  key: service.host
+            - name: SMALLRYE_MESSAGING_SOURCE_EVENTS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: messaging-config
+                  key: service.port.amqp
