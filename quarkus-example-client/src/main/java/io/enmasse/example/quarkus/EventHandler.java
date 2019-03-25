@@ -1,5 +1,7 @@
 package io.enmasse.example.quarkus;
 
-public interface EventHandler {
+import org.apache.qpid.proton.message.Message;
 
+public interface EventHandler {
+    Message process(Message message);
 }

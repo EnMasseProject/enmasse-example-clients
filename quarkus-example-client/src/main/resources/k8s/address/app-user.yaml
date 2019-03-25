@@ -3,7 +3,7 @@ kind: MessagingUser
 metadata:
   name: quarkus-example.app
 spec:
-  username: app
+  username: system:serviceaccount:myapp:default
   authentication:
     type: serviceaccount
   authorization:
