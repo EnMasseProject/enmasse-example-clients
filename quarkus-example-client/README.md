@@ -14,7 +14,7 @@ mvn package -Pnative
 ```
 oc new-project myapp
 oc apply -f src/main/resources/openshift
-oc apply -f src/main/resources/k8s/addressspace.yaml
-oc apply -f src/main/resources/k8s
+oc apply -f src/main/resources/k8s/addressspace
+oc apply -f src/main/resources/k8s/address
 oc start-build quarkus-example-client --from-dir=. --follow
 ```
