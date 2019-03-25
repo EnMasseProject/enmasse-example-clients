@@ -8,7 +8,7 @@ spec:
   endpoints:
     - name: messaging
       service: messaging
-      export:
+      exports:
       - kind: ConfigMap
         name: messaging-config
       cert:
