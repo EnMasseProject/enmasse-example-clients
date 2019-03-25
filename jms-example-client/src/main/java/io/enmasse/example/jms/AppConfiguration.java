@@ -1,21 +1,12 @@
 package io.enmasse.example.jms;
 
-import io.fabric8.openshift.client.OpenShiftConfig;
-import io.fabric8.openshift.client.OpenShiftConfigBuilder;
-import io.swagger.client.Configuration;
-import io.swagger.client.api.AddressspacesApi;
-import io.swagger.client.model.IoEnmasseV1beta1AddressSpace;
-import io.swagger.client.model.IoEnmasseV1beta1AddressSpaceStatusEndpointStatuses;
-import io.swagger.client.model.IoEnmasseV1beta1AddressSpaceStatusServicePorts;
-import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Map;
 
 public class AppConfiguration {
-    private static final Logger log = LoggerFactory.getLogger(AppConfiguration.class);
     private final String hostname;
     private final int port;
     private final String username;
@@ -51,49 +42,24 @@ public class AppConfiguration {
     }
 
     public static AppConfiguration create(Map<String, String> env) throws Exception {
-        String addressSpaceName = env.getOrDefault("ADDRESS_SPACE", "jms-example");
-
-        OpenShiftConfig openShiftconfig = new OpenShiftConfigBuilder().build();
-
-        String url = openShiftconfig.getMasterUrl();
-        String basePath = url.substring(0, url.length() - 1);
-
-        Configuration.getDefaultApiClient().setBasePath(basePath);
-        Configuration.getDefaultApiClient().setAccessToken(openShiftconfig.getOauthToken());
-        Configuration.getDefaultApiClient().setDebugging(true);
-
-        ResteasyClient client = new ResteasyClientBuilder()
-                .disableTrustManager()
-                .build();
-        Configuration.getDefaultApiClient().setHttpClient(client);
-
-
-        AddressspacesApi addressspacesApi = new AddressspacesApi(Configuration.getDefaultApiClient());
-
-        IoEnmasseV1beta1AddressSpace addressSpace = addressspacesApi.readEnmasseV1alpha1NamespacedAddressSpace(openShiftconfig.getNamespace(), addressSpaceName);
-        for (IoEnmasseV1beta1AddressSpaceStatusEndpointStatuses endpointStatus : addressSpace.getStatus().getEndpointStatuses()) {
-            if ("messaging".equals(endpointStatus.getName())) {
-                return readAppConfiguration(env, openShiftconfig, endpointStatus);
-            }
-        }
-        throw new RuntimeException("Unable to find endpoint 'messaging'");
-    }
-
-    private static AppConfiguration readAppConfiguration(Map<String, String> env, OpenShiftConfig openShiftConfig, IoEnmasseV1beta1AddressSpaceStatusEndpointStatuses endpointStatus) throws Exception {
-        String hostname = endpointStatus.getServiceHost();
-        Integer port = endpointStatus.getServicePorts().stream()
-                .filter(externalPort -> "amqp".equals(externalPort.getName()))
-                .map(IoEnmasseV1beta1AddressSpaceStatusServicePorts::getPort)
-                .findAny().orElse(null);
-
-        if (port == null) {
-            throw new IllegalArgumentException("Unable to find port 'amqp' for endpoint");
-        }
-
+        String hostname = env.get("MESSAGING_HOST");
+        Integer port = Integer.parseInt(env.get("MESSAGING_PORT"));
         String userName = "@@serviceaccount@@";
-        String password = openShiftConfig.getOauthToken();
+        String password = getOauthToken(env);
         String address = env.getOrDefault("ADDRESS", "myqueue");
 
         return new AppConfiguration(hostname, port, userName, password, address);
+    }
+
+    private static String getOauthToken(Map<String, String> env) throws IOException {
+        String token = env.get("TOKEN");
+        if (token == null) {
+            token = readTokenFromFile();
+        }
+        return token;
+    }
+
+    private static String readTokenFromFile() throws IOException {
+        return new String(Files.readAllBytes(Paths.get("/var/run/secrets/kubernetes.io/serviceaccount/token")), StandardCharsets.UTF_8);
     }
 }

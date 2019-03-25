@@ -2,6 +2,8 @@ package io.enmasse.example.quarkus;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.net.PemTrustOptions;
 import io.vertx.proton.*;
 import org.apache.qpid.proton.amqp.messaging.AmqpValue;
 import org.apache.qpid.proton.message.Message;
@@ -24,6 +26,9 @@ public class EventProcessor extends AbstractVerticle {
         ProtonClient client = ProtonClient.create(vertx);
 
         ProtonClientOptions options = new ProtonClientOptions();
+        options.setSsl(true);
+        options.setPemTrustOptions(new PemTrustOptions()
+                .addCertValue(Buffer.buffer(appConfiguration.getCa())));
         client.connect(options, appConfiguration.getHostname(), appConfiguration.getPort(), appConfiguration.getUsername(), appConfiguration.getPassword(), connection -> {
             if (connection.succeeded()) {
                 log.info("Connected to {}:{}", appConfiguration.getHostname(), appConfiguration.getPort());

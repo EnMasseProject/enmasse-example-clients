@@ -36,4 +36,4 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   name: messaging-config
-                  key: service.port.amqp
+                  key: service.port.amqps
