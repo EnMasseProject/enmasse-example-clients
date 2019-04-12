@@ -2,11 +2,9 @@ package io.enmasse.example.vertx;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
-import io.vertx.proton.ProtonClient;
-import io.vertx.proton.ProtonClientOptions;
-import io.vertx.proton.ProtonConnection;
-import io.vertx.proton.ProtonReceiver;
-import org.apache.qpid.proton.amqp.messaging.AmqpValue;
+import io.vertx.ext.amqp.AmqpClient;
+import io.vertx.ext.amqp.AmqpClientOptions;
+import io.vertx.ext.amqp.AmqpConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,37 +18,34 @@ public class VertxConsumer extends AbstractVerticle {
 
     @Override
     public void start(Future<Void> startPromise) {
-        ProtonClient client = ProtonClient.create(vertx);
-
-        ProtonClientOptions options = new ProtonClientOptions();
+        AmqpClientOptions options = new AmqpClientOptions();
         options.setSsl(true);
 
         // Remove the below in a production OpenShift cluster
         options.setHostnameVerificationAlgorithm("");
         options.setTrustAll(true);
+        options.setHost(appConfiguration.getHostname());
+        options.setPort(appConfiguration.getPort());
+        options.setUsername(appConfiguration.getUsername());
+        options.setPassword(appConfiguration.getPassword());
 
-        client.connect(options, appConfiguration.getHostname(), appConfiguration.getPort(), appConfiguration.getUsername(), appConfiguration.getPassword(), connection -> {
+        AmqpClient client = AmqpClient.create(vertx, options);
+        client.connect(connection -> {
             if (connection.succeeded()) {
                 log.info("Connected to {}:{}", appConfiguration.getHostname(), appConfiguration.getPort());
-                ProtonConnection connectionHandle = connection.result();
-                connectionHandle.open();
+                AmqpConnection connectionHandle = connection.result();
 
-                ProtonReceiver receiver = connectionHandle.createReceiver(appConfiguration.getAddress());
-                receiver.handler((protonDelivery, message) -> {
-                    String payload = (String) ((AmqpValue)message.getBody()).getValue();
-                    log.info("Received '{}'", payload);
-                });
-                receiver.openHandler(link -> {
-                    if (link.succeeded()) {
-                        log.info("Receiver attached to '{}'", appConfiguration.getAddress());
-                        startPromise.complete();
-                    } else {
-                        log.info("Error attaching to {}", appConfiguration.getAddress(), link.cause());
-                        startPromise.fail(link.cause());
-                    }
-                });
-                receiver.closeHandler(link -> log.info("Receiver for {} closed", appConfiguration.getAddress()));
-                receiver.open();
+                connectionHandle.createReceiver(appConfiguration.getAddress(),
+                        msg -> log.info("Received '{}'", msg.bodyAsString()),
+                        done -> {
+                            if (done.succeeded()) {
+                                log.info("Receiver attached to '{}'", appConfiguration.getAddress());
+                                startPromise.complete();
+                            } else {
+                                log.info("Error attaching to {}", appConfiguration.getAddress(), done.cause());
+                                startPromise.fail(done.cause());
+                            }
+                        });
             } else {
                 log.info("Error connecting to {}:{}: {}", appConfiguration.getHostname(), appConfiguration.getPort(), connection.cause().getMessage());
                 startPromise.fail(connection.cause());

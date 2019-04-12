@@ -16,7 +16,7 @@
   <dependencies>
     <dependency>
       <groupId>io.vertx</groupId>
-      <artifactId>vertx-proton</artifactId>
+      <artifactId>vertx-amqp-client</artifactId>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

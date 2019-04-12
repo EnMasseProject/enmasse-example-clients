@@ -3,10 +3,8 @@ package io.enmasse.example.quarkus;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.core.net.PemTrustOptions;
-import io.vertx.proton.*;
-import org.apache.qpid.proton.amqp.messaging.AmqpValue;
-import org.apache.qpid.proton.message.Message;
+import io.vertx.core.net.PemKeyCertOptions;
+import io.vertx.ext.amqp.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,53 +21,50 @@ public class EventProcessor extends AbstractVerticle {
 
     @Override
     public void start(Future<Void> startPromise) {
-        ProtonClient client = ProtonClient.create(vertx);
-
-        ProtonClientOptions options = new ProtonClientOptions();
+        AmqpClientOptions options = new AmqpClientOptions();
         options.setSsl(true);
-        options.setPemTrustOptions(new PemTrustOptions()
+
+        // Remove the below in a production OpenShift cluster
+        options.setPemKeyCertOptions(new PemKeyCertOptions()
                 .addCertValue(Buffer.buffer(appConfiguration.getCa())));
-        client.connect(options, appConfiguration.getHostname(), appConfiguration.getPort(), appConfiguration.getUsername(), appConfiguration.getPassword(), connection -> {
-            if (connection.succeeded()) {
+
+        options.setHost(appConfiguration.getHostname());
+        options.setPort(appConfiguration.getPort());
+        options.setUsername(appConfiguration.getUsername());
+        options.setPassword(appConfiguration.getPassword());
+
+        AmqpClient client = AmqpClient.create(vertx, options);
+        client.connect(ar -> {
+            if (ar.succeeded()) {
                 log.info("Connected to {}:{}", appConfiguration.getHostname(), appConfiguration.getPort());
-                ProtonConnection connectionHandle = connection.result();
-                connectionHandle.open();
+                AmqpConnection connection = ar.result();
 
-                ProtonSender sender = connectionHandle.createSender(appConfiguration.getControlAddress());
-
-                sender.closeHandler(link -> log.info("Sender to {} closed", appConfiguration.getControlAddress()));
-                sender.openHandler(result -> {
-                    if (result.succeeded()) {
-                        log.info("Sender attached to control address '{}'", appConfiguration.getControlAddress());
-                        ProtonReceiver receiver = connectionHandle.createReceiver(appConfiguration.getEventsAddress());
-                        receiver.handler((protonDelivery, message) -> {
-                            log.info("Received message: {}", message.getBody());
-                            Message controlMessage = eventHandler.process(message);
+                connection.createSender(appConfiguration.getControlAddress(), done -> {
+                    if (done.succeeded()) {
+                        AmqpSender sender = done.result();
+                        connection.createReceiver(appConfiguration.getEventsAddress(), msg -> {
+                            log.info("Received message: {}", msg.bodyAsString());
+                            AmqpMessage controlMessage = eventHandler.process(msg);
                             if (controlMessage != null) {
-                                sender.send(message);
+                                sender.send(controlMessage);
                             }
-                        });
-                        receiver.openHandler(link -> {
-                            if (link.succeeded()) {
+                        }, rdone -> {
+                            if (rdone.succeeded()) {
                                 log.info("Receiver attached to '{}'", appConfiguration.getEventsAddress());
                                 startPromise.complete();
                             } else {
-                                log.info("Error attaching to {}", appConfiguration.getEventsAddress(), link.cause());
-                                startPromise.fail(link.cause());
+                                log.info("Error attaching to {}", appConfiguration.getEventsAddress(), rdone.cause());
+                                startPromise.fail(rdone.cause());
                             }
                         });
-                        receiver.closeHandler(link -> log.info("Receiver for {} closed", appConfiguration.getEventsAddress()));
-                        receiver.open();
                     } else {
                         log.warn("Error attaching sender");
-                        startPromise.fail(result.cause());
+                        startPromise.fail(done.cause());
                     }
                 });
-
-                sender.open();
             } else {
-                log.info("Error connecting to {}:{}: {}", appConfiguration.getHostname(), appConfiguration.getPort(), connection.cause().getMessage());
-                startPromise.fail(connection.cause());
+                log.info("Error connecting to {}:{}: {}", appConfiguration.getHostname(), appConfiguration.getPort(), ar.cause().getMessage());
+                startPromise.fail(ar.cause());
             }
         });
     }

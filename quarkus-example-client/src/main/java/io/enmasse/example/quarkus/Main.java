@@ -2,8 +2,7 @@ package io.enmasse.example.quarkus;
 
 import io.quarkus.runtime.StartupEvent;
 import io.vertx.core.Vertx;
-import org.apache.qpid.proton.Proton;
-import org.apache.qpid.proton.message.Message;
+import io.vertx.ext.amqp.AmqpMessage;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -22,11 +21,7 @@ public class Main {
 
     void onStart(@Observes StartupEvent ev) throws Exception {
         Vertx vertx = Vertx.vertx();
-        EventHandler eventHandler = message -> {
-            Message controlMessage = Proton.message();
-            controlMessage.setBody(message.getBody());
-            return controlMessage;
-        };
+        EventHandler eventHandler = message -> AmqpMessage.create().withBody(message.bodyAsString()).build();
         vertx.deployVerticle(new EventProcessor(AppConfiguration.create(System.getenv()), eventHandler));
     }
 }

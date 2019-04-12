@@ -1,7 +1,7 @@
 package io.enmasse.example.quarkus;
 
-import org.apache.qpid.proton.message.Message;
+import io.vertx.ext.amqp.AmqpMessage;
 
 public interface EventHandler {
-    Message process(Message message);
+    AmqpMessage process(AmqpMessage message);
 }
