@@ -1,0 +1,13 @@
+apiVersion: user.enmasse.io/v1beta1
+kind: MessagingUser
+metadata:
+  name: quarkus-example.app
+spec:
+  username: system:serviceaccount:myapp:default
+  authentication:
+    type: serviceaccount
+  authorization:
+    - operations: ["recv"]
+      addresses: ["events"]
+    - operations: ["send"]
+      addresses: ["control"]

@@ -24,10 +24,11 @@
     <junit.version>4.12</junit.version>
     <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
     <resteasy.version>3.6.2.Final</resteasy.version>
-		<jodatime.version>2.10.1</jodatime.version>
+    <jodatime.version>2.10.1</jodatime.version>
     <migbase64.version>2.2</migbase64.version>
     <surefire-plugin.version>2.22.0</surefire-plugin.version>
     <quarkus.version>0.12.0</quarkus.version>
+    <smallrye.version>0.0.7</smallrye.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -35,6 +36,7 @@
      <module>vertx-example-client</module>
      <module>jms-example-client</module>
      <module>quarkus-example-client</module>
+     <module>microprofile-example-client</module>
   </modules>
 
   <dependencyManagement>
@@ -60,6 +62,11 @@
         <groupId>io.fabric8</groupId>
         <artifactId>openshift-client</artifactId>
         <version>${kubernetes-client.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-amqp-client</artifactId>
+        <version>${vertx.version}</version>
       </dependency>
       <dependency>
         <groupId>io.vertx</groupId>

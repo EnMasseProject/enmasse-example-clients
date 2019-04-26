@@ -1,0 +1,8 @@
+apiVersion: enmasse.io/v1beta1
+kind: Address
+metadata:
+  name: quarkus-example.control
+spec:
+  address: control
+  type: anycast
+  plan: standard-small-anycast
