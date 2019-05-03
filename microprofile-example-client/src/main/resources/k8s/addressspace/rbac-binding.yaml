@@ -1,11 +1,11 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: rbac-binding
+  name: rbac-binding-microprofile
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: rbac
+  name: rbac-microprofile
 subjects:
 - kind: ServiceAccount
   name: address-space-controller

@@ -1,7 +1,7 @@
 apiVersion: user.enmasse.io/v1beta1
 kind: MessagingUser
 metadata:
-  name: quarkus-example.app
+  name: microprofile-example.app
 spec:
   username: system:serviceaccount:myapp:default
   authentication:

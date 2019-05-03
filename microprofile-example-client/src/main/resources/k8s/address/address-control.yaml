@@ -1,7 +1,7 @@
 apiVersion: enmasse.io/v1beta1
 kind: Address
 metadata:
-  name: quarkus-example.control
+  name: microprofile-example.control
 spec:
   address: control
   type: anycast

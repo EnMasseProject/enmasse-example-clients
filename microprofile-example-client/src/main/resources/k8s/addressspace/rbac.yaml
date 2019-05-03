@@ -1,12 +1,12 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: rbac
+  name: rbac-microprofile
 rules:
   - apiGroups: [ "" ]
     resources: [ "configmaps" ]
     verbs: [ "create" ]
   - apiGroups: [ "" ]
     resources: [ "configmaps" ]
-    resourceNames: [ "messaging-config" ]
+    resourceNames: [ "microprofile-config" ]
     verbs: [ "get", "update", "patch" ]

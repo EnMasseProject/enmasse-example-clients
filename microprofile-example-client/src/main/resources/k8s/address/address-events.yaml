@@ -1,7 +1,7 @@
 apiVersion: enmasse.io/v1beta1
 kind: Address
 metadata:
-  name: quarkus-example.events
+  name: microprofile-example.events
 spec:
   address: events
   type: queue

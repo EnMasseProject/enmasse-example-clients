@@ -1,7 +1,7 @@
 apiVersion: user.enmasse.io/v1beta1
 kind: MessagingUser
 metadata:
-  name: quarkus-example.device1
+  name: microprofile-example.device1
 spec:
   username: device1
   authentication:
