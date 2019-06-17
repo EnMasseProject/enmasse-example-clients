@@ -20,7 +20,7 @@
     <swagger-codegen-maven-plugin.version>2.3.1</swagger-codegen-maven-plugin.version>
     <swagger-annotations.version>1.5.18</swagger-annotations.version>
     <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
-    <jackson.version>2.9.8</jackson.version>
+    <jackson.version>2.9.9</jackson.version>
     <junit.version>4.12</junit.version>
     <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
     <resteasy.version>3.6.2.Final</resteasy.version>
