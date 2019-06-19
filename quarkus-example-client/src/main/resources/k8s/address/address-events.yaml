@@ -1,8 +1,0 @@
-apiVersion: enmasse.io/v1beta1
-kind: Address
-metadata:
-  name: quarkus-example.events
-spec:
-  address: events
-  type: queue
-  plan: standard-small-queue
