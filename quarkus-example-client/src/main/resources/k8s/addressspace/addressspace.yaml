@@ -3,8 +3,8 @@ kind: AddressSpace
 metadata:
   name: quarkus-example
 spec:
-  type: standard
-  plan: standard-small
+  type: brokered
+  plan: brokered-single-broker
   endpoints:
     - name: messaging
       service: messaging
@@ -12,4 +12,4 @@ spec:
         provider: openshift
       exports:
         - kind: ConfigMap
-          name: messaging-config
+          name: quarkus-config

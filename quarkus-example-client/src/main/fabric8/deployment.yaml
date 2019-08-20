@@ -1,0 +1,15 @@
+spec:
+  template:
+    spec:
+      containers:
+        - env:
+            - name: AMQP_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  name: quarkus-config
+                  key: service.host
+            - name: AMQP_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: quarkus-config
+                  key: service.port.amqp

@@ -7,9 +7,10 @@ the endpoints automatically.
 
 The examples assume that you have already setup EnMasse on a Kubernetes or OpenShift cluster.
 
-There are currently 2 Java-based clients:
+There are currently 3 Java-based clients:
 
 * vertx-example-client - Vert.X based client configured using a properties file, shows how to access EnMasse externally
-* jms-example-client - JMS-based configured to read AddressSpace info and use service account for authentication.
+* jms-example-client - JMS-based with injection of endpoint info and use service account for authentication.
+* quarkus-example-client - Quarkus/Microprofile-based client with injection of endpoint info and use service account for authentication.
 
 Both examples come with resources that you deploy to provision messaging.

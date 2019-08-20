@@ -7,7 +7,5 @@ spec:
   authentication:
     type: serviceaccount
   authorization:
-    - operations: ["recv"]
-      addresses: ["events"]
-    - operations: ["send"]
-      addresses: ["control"]
+    - operations: ["recv", "send"]
+      addresses: ["prices"]

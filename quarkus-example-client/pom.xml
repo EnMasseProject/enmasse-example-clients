@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.enmasse.examples</groupId>
@@ -9,35 +9,44 @@
     <relativePath>../</relativePath>
   </parent>
   <artifactId>quarkus-example-client</artifactId>
+  <properties>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <surefire-plugin.version>2.22.0</surefire-plugin.version>
+    <quarkus.version>0.18.0</quarkus.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <docker.org>myapp</docker.org>
+  </properties>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-bom</artifactId>
+        <version>${quarkus.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-arc</artifactId>
+      <artifactId>quarkus-resteasy</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>rest-assured</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-vertx</artifactId>
-      <version>${quarkus.version}</version>
-    </dependency>
-    <!--
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-smallrye-reactive-messaging</artifactId>
-      <version>${quarkus.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.smallrye</groupId>
-      <artifactId>smallrye-reactive-messaging-amqp</artifactId>
-      <version>${quarkus.version}</version>
-    </dependency>
-    -->
-    <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-amqp-client</artifactId>
+      <artifactId>quarkus-smallrye-reactive-messaging-amqp</artifactId>
     </dependency>
   </dependencies>
   <build>
@@ -63,6 +72,7 @@
           </systemProperties>
         </configuration>
       </plugin>
+      
     </plugins>
   </build>
   <profiles>
@@ -106,6 +116,44 @@
                 </configuration>
               </execution>
             </executions>
+          </plugin>
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>fabric8-maven-plugin</artifactId>
+            <configuration>
+              <verbose>all</verbose>
+              <images>
+                <image>
+                  <name>${docker.org}/quarkus-example-client</name>
+                  <build>
+                    <from>registry.fedoraproject.org/fedora-minimal</from>
+                    <tags>
+                      <tag>latest</tag>
+                    </tags>
+                    <ports>
+                      <port>8080</port>
+                    </ports>
+                    <workdir>/work/</workdir>
+                    <entryPoint>
+                      <shell>./application -Dquarkus.http.host=0.0.0.0</shell>
+                    </entryPoint>
+                    <assembly>
+                      <targetDir>/</targetDir>
+                      <inline>
+                        <files>
+                          <file>
+                            <source>${project.basedir}/target/${project.artifactId}-${project.version}-runner</source>
+                            <outputDirectory>/work</outputDirectory>
+                            <fileMode>755</fileMode>
+                            <destName>application</destName>
+                          </file>
+                        </files>
+                      </inline>
+                    </assembly>
+                  </build>
+                </image>
+              </images>
+            </configuration>
           </plugin>
         </plugins>
       </build>

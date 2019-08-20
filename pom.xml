@@ -12,23 +12,16 @@
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <vertx.version>3.7.0</vertx.version>
     <fmp.version>3.5.42</fmp.version>
     <qpid.version>0.40.0</qpid.version>
     <slf4j.version>1.7.21</slf4j.version>
     <kubernetes-client.version>4.1.1</kubernetes-client.version>
-    <swagger-codegen-maven-plugin.version>2.3.1</swagger-codegen-maven-plugin.version>
-    <swagger-annotations.version>1.5.18</swagger-annotations.version>
     <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
     <jackson.version>2.9.9</jackson.version>
     <junit.version>4.12</junit.version>
     <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
-    <resteasy.version>3.6.2.Final</resteasy.version>
-    <jodatime.version>2.10.1</jodatime.version>
-    <migbase64.version>2.2</migbase64.version>
     <surefire-plugin.version>2.22.0</surefire-plugin.version>
-    <quarkus.version>0.12.0</quarkus.version>
-    <smallrye.version>0.0.7</smallrye.version>
+    <quarkus.version>0.18.0</quarkus.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -36,7 +29,6 @@
      <module>vertx-example-client</module>
      <module>jms-example-client</module>
      <module>quarkus-example-client</module>
-     <module>microprofile-example-client</module>
   </modules>
 
   <dependencyManagement>
@@ -64,16 +56,6 @@
         <version>${kubernetes-client.version}</version>
       </dependency>
       <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-amqp-client</artifactId>
-        <version>${vertx.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-proton</artifactId>
-        <version>${vertx.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.apache.qpid</groupId>
         <artifactId>qpid-jms-client</artifactId>
         <version>${qpid.version}</version>
@@ -87,69 +69,6 @@
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-simple</artifactId>
         <version>${slf4j.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.swagger</groupId>
-        <artifactId>swagger-annotations</artifactId>
-        <version>${swagger-annotations.version}</version>
-      </dependency>
-      <!-- JSON processing: jackson -->
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-core</artifactId>
-        <version>${jackson.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-annotations</artifactId>
-        <version>${jackson.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-databind</artifactId>
-        <version>${jackson.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.datatype</groupId>
-        <artifactId>jackson-datatype-jsr310</artifactId>
-        <version>${jackson.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.github.joschi.jackson</groupId>
-        <artifactId>jackson-datatype-threetenbp</artifactId>
-        <version>2.6.4</version>
-      </dependency>
-
-        <!-- HTTP client: jersey-client -->
-      <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>resteasy-client</artifactId>
-        <version>${resteasy.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>resteasy-multipart-provider</artifactId>
-        <version>${resteasy.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>resteasy-jackson2-provider</artifactId>
-        <version>${resteasy.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.datatype</groupId>
-        <artifactId>jackson-datatype-joda</artifactId>
-        <version>${jackson.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>joda-time</groupId>
-        <artifactId>joda-time</artifactId>
-        <version>${jodatime.version}</version>
-			</dependency>
-      <dependency>
-        <groupId>com.brsanthu</groupId>
-        <artifactId>migbase64</artifactId>
-        <version>${migbase64.version}</version>
       </dependency>
 
       <dependency>
