@@ -10,3 +10,6 @@ subjects:
 - kind: ServiceAccount
   name: address-space-controller
   namespace: enmasse-infra
+- kind: ServiceAccount
+  name: address-space-controller
+  namespace: amq-online-infra
