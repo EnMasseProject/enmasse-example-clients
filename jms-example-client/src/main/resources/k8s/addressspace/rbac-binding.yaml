@@ -7,6 +7,7 @@ roleRef:
   kind: Role
   name: rbac
 subjects:
-- kind: ServiceAccount
-  name: address-space-controller
-  namespace: enmasse-infra
+- kind: Group
+  name: system:serviceaccounts:enmasse-infra
+- kind: Group
+  name: system:serviceaccounts:amq-online-infra
