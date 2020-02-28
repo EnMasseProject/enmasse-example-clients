@@ -2,14 +2,7 @@ package io.enmasse.example.vertx;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
-import io.vertx.ext.amqp.*;
-import io.vertx.proton.ProtonClient;
-import io.vertx.proton.ProtonClientOptions;
-import io.vertx.proton.ProtonConnection;
-import io.vertx.proton.ProtonSender;
-import org.apache.qpid.proton.Proton;
-import org.apache.qpid.proton.amqp.messaging.AmqpValue;
-import org.apache.qpid.proton.message.Message;
+import io.vertx.amqp.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

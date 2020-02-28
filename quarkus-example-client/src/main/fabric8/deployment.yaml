@@ -3,7 +3,7 @@ spec:
     spec:
       containers:
         - env:
-            - name: AMQP_SERVER
+            - name: AMQP_HOST
               valueFrom:
                 configMapKeyRef:
                   name: quarkus-config

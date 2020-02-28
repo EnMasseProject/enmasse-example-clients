@@ -6,8 +6,6 @@ This example clients demonstrates how you can use [Quarkus](https://quarkus.io/)
 Address and MessagingUser. Run the following command to create them (replace oc with kubectl if
 you're using a different Kubernetes distribution):
 
-NOTE: This requires [GraalVM](https://www.graalvm.org/) to be installed.
-
 ```
 oc new-project myapp
 oc apply -f src/main/resources/k8s/addressspace
@@ -20,7 +18,7 @@ On Kubernetes, you need to push the image to a docker registry and reference it.
 docker org of the image by setting `-Ddocker.org=<docker hub username>`.
 
 ```
-mvn -Pnative -Dfabric8.mode=kubernetes -Dfabric8.build.strategy=docker -Ddocker.registry=docker.io package fabric8:build fabric8:push fabric8:resource fabric8:apply
+mvn -Pnative -Dquarkus.native.container-build=true -Dfabric8.mode=kubernetes -Dfabric8.build.strategy=docker -Ddocker.registry=docker.io package fabric8:build fabric8:push fabric8:resource fabric8:apply
 ```
 
 ## Build and deploy (OpenShift):
@@ -28,7 +26,7 @@ mvn -Pnative -Dfabric8.mode=kubernetes -Dfabric8.build.strategy=docker -Ddocker.
 On OpenShift, you can build the application directly on the cluster:
 
 ```
-mvn -Pnative -Dfabric8.mode=openshift -Dfabric8.build.strategy=docker package fabric8:build fabric8:resource fabric8:apply
+mvn -Pnative -Dquarkus.native.container-build=true -Dfabric8.mode=openshift -Dfabric8.build.strategy=docker package fabric8:build fabric8:resource fabric8:apply
 
 # Get the route URL
 export URL="http://$(oc get route quarkus-example-client -o jsonpath={.spec.host})"

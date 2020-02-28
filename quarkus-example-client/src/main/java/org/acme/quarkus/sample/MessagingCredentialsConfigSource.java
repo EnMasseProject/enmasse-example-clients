@@ -1,15 +1,19 @@
 package org.acme.quarkus.sample;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
 public class MessagingCredentialsConfigSource implements ConfigSource {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessagingCredentialsConfigSource.class);
+
     private static final Set<String> propertyNames;
 
     static {
@@ -25,14 +29,10 @@ public class MessagingCredentialsConfigSource implements ConfigSource {
 
     @Override
     public Map<String, String> getProperties() {
-        try {
-            Map<String, String> properties = new HashMap<>();
-            properties.put("amqp-username", "@@serviceaccount@@");
-            properties.put("amqp-password", readTokenFromFile());
-            return properties;
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+        Map<String, String> properties = new HashMap<>();
+        properties.put("amqp-username", "@@serviceaccount@@");
+        properties.put("amqp-password", readTokenFromFile());
+        return properties;
     }
 
     @Override
@@ -40,11 +40,7 @@ public class MessagingCredentialsConfigSource implements ConfigSource {
         if ("amqp-username".equals(key)) {
             return "@@serviceaccount@@";
         } else if ("amqp-password".equals(key)) {
-            try {
-                return readTokenFromFile();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
+            return readTokenFromFile();
         }
         return null;
     }
@@ -54,7 +50,13 @@ public class MessagingCredentialsConfigSource implements ConfigSource {
         return "messaging-credentials-config";
     }
 
-    private static String readTokenFromFile() throws IOException {
-        return new String(Files.readAllBytes(Paths.get("/var/run/secrets/kubernetes.io/serviceaccount/token")), StandardCharsets.UTF_8);
+    private static String readTokenFromFile(){
+        try {
+            return new String(Files.readAllBytes(Paths.get("/var/run/secrets/kubernetes.io/serviceaccount/token")), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            LOGGER.warn("Error reading SA token", e);
+            return null;
+        }
     }
+
 }
