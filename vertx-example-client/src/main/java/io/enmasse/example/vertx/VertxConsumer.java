@@ -2,9 +2,9 @@ package io.enmasse.example.vertx;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
-import io.vertx.ext.amqp.AmqpClient;
-import io.vertx.ext.amqp.AmqpClientOptions;
-import io.vertx.ext.amqp.AmqpConnection;
+import io.vertx.amqp.AmqpClient;
+import io.vertx.amqp.AmqpClientOptions;
+import io.vertx.amqp.AmqpConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
