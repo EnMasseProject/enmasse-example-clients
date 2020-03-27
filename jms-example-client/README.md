@@ -9,8 +9,7 @@ you're using a different Kubernetes distribution):
 
 ```
 oc new-project myapp
-oc apply -f src/main/resources/k8s/addressspace
-oc apply -f src/main/resources/k8s/address
+oc apply -f src/main/resources/k8s
 ```
 
 ## Building and running client
