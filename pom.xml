@@ -18,7 +18,7 @@
     <kubernetes-client.version>4.1.1</kubernetes-client.version>
     <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
     <jackson.version>2.9.9</jackson.version>
-    <junit.version>4.12</junit.version>
+    <junit.version>4.13.1</junit.version>
     <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
     <surefire-plugin.version>2.22.0</surefire-plugin.version>
     <quarkus.version>0.18.0</quarkus.version>
